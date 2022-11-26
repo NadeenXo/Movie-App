@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PopMovie</string>
+    <string name="favorite">Favorite</string>
+    <string name="home">Home</string>
+</resources>
