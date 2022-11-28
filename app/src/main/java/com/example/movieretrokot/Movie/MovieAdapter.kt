@@ -1,5 +1,6 @@
 package com.example.movieretrokot.Movie
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,7 @@ import com.example.movieretrokot.ViewModel.MovieViewModel
 import kotlinx.android.synthetic.main.list_item_movie.view.*
 
 class MovieAdapter(
-    val context: Context, val vm: MovieViewModel
+    val context: Context, val viewModel: MovieViewModel
 ) : ListAdapter<Movie, MovieAdapter.MovieViewHolder>(MovieItemCallback) {
 
     companion object MovieItemCallback : DiffUtil.ItemCallback<Movie>() {
@@ -27,7 +28,6 @@ class MovieAdapter(
             return oldItem == newItem
         }
     }
-    private var movieList = emptyList<Movie>()
 
     inner class MovieViewHolder(view: View) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
@@ -57,8 +57,9 @@ class MovieAdapter(
             itemView.movie_name_tv.text = movie.title
             itemView.movie_date_tv.text = movie.release
             itemView.movie_rate_tv.text = movie.vote
-            Glide.with(itemView).load(IMAGE_BASE + movie.poster).into(itemView.movie_img)
-//            Glide.with(itemView).load(movie.poster).into(itemView.movie_img)
+            Glide.with(itemView).load(IMAGE_BASE + movie.poster)
+                                .into(itemView.movie_img)
+
 
             if (movie.isFavorite) {
                 imvFavorite.setImageDrawable(icFavoriteFilledImage)
@@ -70,17 +71,13 @@ class MovieAdapter(
             this.currentPosition = position
             this.currentMovie = movie
 
-
-//            context.insertDB(movie.title!!, movie.vote!!,
-//                                movie.poster!!,movie.release!!,
-//                                currentMovie!!.isFavorite)
         }
 
         fun setListeners() {
-//            imvDelete.setOnClickListener(this@CityViewHolder)
             imvFavorite.setOnClickListener(this@MovieViewHolder)
 //            imvFavorite.setOnClickListener{
 //                vm.updateMovie(currentMovie.id,!currentMovie.isFavorite)
+//
 //            }
         }
 
@@ -92,25 +89,26 @@ class MovieAdapter(
         }
 
 
-        fun addToFavorite() {
-            currentMovie?.isFavorite =
+        @SuppressLint("NotifyDataSetChanged")
+        private fun addToFavorite() {
+            currentMovie.isFavorite =
                 !(currentMovie.isFavorite)        // Toggle the 'isFavourite' Boolean value
 
-            if (currentMovie?.isFavorite!!) {        // if it is favorite - update icon and add the object to favorite list
-                imvFavorite.setImageDrawable(icFavoriteFilledImage)
-//                vm.addFavMovie2(currentMovie!!)
-                vm.addFavMovie(currentMovie!!)
 
-//                FavMovie.favoriteMovieList.add(currentMovie!!)
-//
+            if (currentMovie.isFavorite) {        // if it is favorite - update icon and add the object to favorite list
+                imvFavorite.setImageDrawable(icFavoriteFilledImage)
+
+                viewModel.addFavMovie(currentMovie)
 
             } else {        // else it is not favorite - update icon and remove the object from favorite list
                 imvFavorite.setImageDrawable(icFavoriteBorderedImage)
-//                vm.deleteFavMovie2(currentMovie!!)
 
-                vm.deleteFavMovie(currentMovie!!)
-//                FavMovie.favoriteMovieList.remove(currentMovie!!)
+                viewModel.deleteFavMovie(currentMovie)
+
             }
+//            vm.updateMovie(currentMovie!!)
+
+            notifyDataSetChanged()
          }
     }
 
@@ -126,11 +124,6 @@ class MovieAdapter(
         val movie = getItem(position)
         holder.setListeners()
         holder.bindMovie(movie, position)
-
-    }
-    fun setData(movie: List<Movie>) {
-        movieList=movie
-        notifyDataSetChanged()
 
     }
 

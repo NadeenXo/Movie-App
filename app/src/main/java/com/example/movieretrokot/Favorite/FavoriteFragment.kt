@@ -29,7 +29,7 @@ class FavoriteFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("favFrag", "oncreate")
+        Log.d("favFrag", "on create")
 
         val view = inflater.inflate(R.layout.fragment_favorite, container, false)
 
@@ -42,15 +42,19 @@ class FavoriteFragment : Fragment() {
 
         val context = requireContext()
 
-//       favMovieList = viewModel.favMovieList as ArrayList<Movie>
-
         favoriteAdapter = FavoriteAdapter(context)
+
+//        for (m in viewModel.movieList.value!!){
+//            if (m.isFavorite==true && m!=null){
+//                viewModel.movieList.observe(viewLifecycleOwner) {
+//                    favoriteAdapter.submitList(it)
+//                }
+//            }
+//        }
 
         viewModel.favMovieList.observe(viewLifecycleOwner) {
             favoriteAdapter.submitList(it)
         }
-
-       // viewModel.readAll.observe(viewLifecycleOwner, androidx.lifecycle.Observer { m->favoriteAdapter.setDBData(m)})
 
 
         recyclerView = view.findViewById(R.id.favorite_recycler_view)

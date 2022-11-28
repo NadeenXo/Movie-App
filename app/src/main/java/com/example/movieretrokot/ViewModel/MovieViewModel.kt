@@ -14,7 +14,7 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     var movieList: MutableLiveData<List<Movie>> = MutableLiveData<List<Movie>>()
     var favMovieList: MutableLiveData<MutableList<Movie>> = MutableLiveData<MutableList<Movie>>()
 
-    val readAll: LiveData<List<Movie>>
+//    val readAll: LiveData<List<Movie>>
 
     private val repository: MovieRepository
 
@@ -24,52 +24,69 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
 
         val mDao=  AppDB.getDB(application).movieDao()
         repository= MovieRepository(mDao)
-        readAll=repository.getAll()
+//        readAll=repository.getAll()
+
     }
 
-    fun addMovie(movie: Movie) {
-        //run in background
-        viewModelScope.launch(Dispatchers.IO)
-        {
-            repository.insert(movie)
-        }
-    }
 
     fun setupMovies(movies:List<Movie>) {
-        movieList.value = movies
+//        movieList.value=movies
 
-//        repository.insertAllMovies(movies)
+        viewModelScope.launch(Dispatchers.IO)
+        {
+
+            movieList.postValue(repository.loadAllMovies())
+            Log.d(" MVM ", " loadAllMovies")
+
+        }
+
+        // insert data
+        //run one time
+//        viewModelScope.launch(Dispatchers.IO)
+//        {
+//            insertAllMovies(movies)
+//        }
 
     }
 
-//    fun setupFavMovies(lm: MutableList<Movie>) {
-//        favMovieList.value = lm
-//    }
 
     fun addFavMovie(mv: Movie) {
-        favMovieList.value?.add(mv)
-        Log.d("TAG", "addFavMovie: added movie $mv")
+        for (m in movieList.value!!){
+            if (m.id==mv.id) {
+                favMovieList.value?.add(mv)
+                m.isFavorite=true
+            }
+            }
+
+        Log.d("MVM", "addFavMovie: added movie $mv")
     }
 
 
     fun deleteFavMovie(mv: Movie) {
-        favMovieList.value?.remove(mv)
-        Log.d("TAG", "addFavMovie:re movie $mv")
+        for (m in movieList.value!!){
+            if (m.id==mv.id) {
+                favMovieList.value?.remove(mv)
+                m.isFavorite=false
+            }
+        }
+        Log.d("MVM", "deleteFavMovie:remove movie $mv")
 
     }
 
-    fun insertAllMovies(Movies: List<Movie>?) {
+    suspend fun insertAllMovies(Movies: List<Movie>?) {
     repository.insertAllMovies(Movies)
+        Log.d("MVM", "insert Movies to DB: $Movies")
+
     }
 
-//    fun addFavMovie2(mv: com.example.movieretrokot.Data.Movie) {
-//        mv.isFavorite=true
-//        Log.d("TAG", "addFavMovie: added movie $mv")
-//    }
-//    fun deleteFavMovie2(mv: com.example.movieretrokot.Data.Movie) {
-//        mv.isFavorite=false
-//        Log.d("TAG", "addFavMovie:re movie $mv")
+
+//    fun updateMovie(movie: Movie) {
 //
+//        for (m in movieList.value!!){
+//            if (m.id==movie.id){
+//                m.isFavorite=true
+//            }
+//        }
 //    }
 
 

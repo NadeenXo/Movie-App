@@ -16,9 +16,8 @@ import com.example.movieretrokot.Movie.Movie
 import kotlinx.android.synthetic.main.list_item_favorite.view.*
 
 
-class FavoriteAdapter(val context: Context): ListAdapter<Movie,FavoriteAdapter.FavViewHolder>(MovieItemCallback) {
-
-    //private var mList = emptyList<com.example.movieretrokot.Data.Movie>()
+class FavoriteAdapter(private val context: Context):
+    ListAdapter<Movie,FavoriteAdapter.FavViewHolder>(MovieItemCallback) {
 
     companion object MovieItemCallback : DiffUtil.ItemCallback<Movie>() {
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
@@ -37,7 +36,7 @@ class FavoriteAdapter(val context: Context): ListAdapter<Movie,FavoriteAdapter.F
 
     override fun onBindViewHolder(itemViewHolder: FavViewHolder, position: Int) {
         val movie = getItem(position)
-        Log.d("movieInfo",""+movie)
+        Log.d("FavAdapter", "info $movie")
         itemViewHolder.setData(movie, position)
     }
 
@@ -46,26 +45,22 @@ class FavoriteAdapter(val context: Context): ListAdapter<Movie,FavoriteAdapter.F
         private val IMAGE_BASE = "https://image.tmdb.org/t/p/w500/"
 
         private var currentPosition: Int = -1
-        private var currentCity: Movie?   = null
+        private var currentMovie: Movie?   = null
 
-        private val txvCityName = itemView.findViewById<TextView>(R.id.fav_movie_name_tv)
-        private val imvCityImage= itemView.findViewById<ImageView>(R.id.fav_movie_img)
+        private val txtMovieName = itemView.findViewById<TextView>(R.id.fav_movie_name_tv)
+        private val imvMovieImage= itemView.findViewById<ImageView>(R.id.fav_movie_img)
 
         fun setData(movie: Movie, position: Int) {
 
-        //Log.d("mmm",""+movie.title)
-        //Log.d("ttt",""+ txvCityName.text)
-            txvCityName.text = movie.title
-            Glide.with(imvCityImage).load(IMAGE_BASE + movie.poster).into(itemView.fav_movie_img)
+            txtMovieName.text = movie.title
+            Glide.with(imvMovieImage).load(IMAGE_BASE + movie.poster)
+                                     .into(itemView.fav_movie_img)
 
             this.currentPosition = position
-            this.currentCity = movie
+            this.currentMovie = movie
 
         }
 
      }
-//    fun setDBData(movie: List<com.example.movieretrokot.Data.Movie>){
-//        this.mList=movie
-//        notifyDataSetChanged()
-//    }
+
 }

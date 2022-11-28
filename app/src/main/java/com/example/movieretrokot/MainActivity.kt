@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController  : NavController
     private lateinit var bottomNavView  : BottomNavigationView
 
-    val viewModel: MovieViewModel by viewModels()
+    private val viewModel: MovieViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,9 +42,6 @@ class MainActivity : AppCompatActivity() {
         val topLevelDestinations = setOf(R.id.fragmentMovieList, R.id.fragmentFavoriteList)
         val appBarConfiguration = AppBarConfiguration(topLevelDestinations)
 
-//        getMovieData { movies : List<Movie> ->
-//            MovieAdapter(MovieAdapter::class.java,viewModel)
-//        }
         // Connect Toolbar with NavController
         toolbar.setupWithNavController(navController, appBarConfiguration)
 

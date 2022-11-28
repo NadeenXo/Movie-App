@@ -26,7 +26,7 @@ class MovieFragment : Fragment() {
 
     val viewModel: MovieViewModel by activityViewModels()
 
-//    lateinit var viewModel:MovieViewModel
+    //    lateinit var viewModel:MovieViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,57 +44,17 @@ class MovieFragment : Fragment() {
 //          viewModel = ViewModelProvider(this).get(MovieViewModel::class.java)
 
 //        val adapter = MovieAdapter( context)
-        val adapter = MovieAdapter( context , viewModel)
+        val adapter = MovieAdapter(context, viewModel)
 
         viewModel.movieList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
-//            viewModel.insertAllMovies(it)
+
         }
 
         movie_recyview.adapter = adapter
 
-        //read from room
-//        viewModel.readAll.observe(viewLifecycleOwner) { m -> adapter.setData(m) }
 
         return view
     }
 
-    @Synchronized
-    fun insertDB(vote: String, title: String, img: String, release: String, isf: Boolean) {
-        synchronized(this) {
-            //create obj
-            val m = Movie(0, vote, title, img, release, isf)
-
-            //add to db
-            viewModel.addMovie(m)
-            Log.d("DB", "$m")
-            Toast.makeText(requireContext(), "$title  added", Toast.LENGTH_LONG).show()
-
-        }
-    }
 }
-
-//    }
-//    @Synchronized
-//    fun insertDB( isf:Boolean){
-//        val t = movie_name_tv.text?.toString()
-//        val r = movie_rate_tv.text?.toString()
-//        val d = movie_date_tv.text?.toString()
-//        //val f = fav_icon_img.toString()
-//        val m = movie_img?.toString()
-//        if (check(t!!, m!!)) {
-//            //create obj
-//            val m = Movie(0, r, t, m, d, isf)
-//
-//            //add to db
-//            viewModel.addMovie(m)
-//            Log.d("DB", "$m")
-//            Toast.makeText(requireContext(),"added", Toast.LENGTH_LONG).show()
-//        }
-//
-//    }
-//    private fun check(t:String,img:String):Boolean{
-//        return !(TextUtils.isEmpty(t) && TextUtils.isEmpty(img))
-//    }
-
-//}
